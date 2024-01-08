@@ -6,16 +6,16 @@ const { firefox } = require('playwright');
   const page = await context.newPage();
 
   try {
-    // Increase the timeout value for the page.goto operation
+
     await page.goto('https://onlinelibrary.wiley.com/feedback', { waitUntil: 'load', timeout: 60000 });
 
-    // Example: Fill in the feedback form
+    
     await page.fill('#nameInput', 'John Doe');
     await page.fill('#emailInput', 'john.doe@example.com');
     await page.fill('#feedbackTextArea', 'Great website!');
     await page.click('#submitFeedbackButton');
 
-    // Add additional steps to verify successful submission or any validation messages
+   
 
     console.log('Feedback form interaction test passed.');
   } catch (error) {
