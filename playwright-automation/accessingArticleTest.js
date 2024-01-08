@@ -1,29 +1,32 @@
 const { firefox } = require('playwright');
 
 (async () => {
-  const browser = await firefox.launch({ headless: false }); // Run in non-headless mode for debugging
+  const browser = await firefox.launch({ headless: false }); 
   const context = await browser.newContext();
   const page = await context.newPage();
 
   try {
-   
-    await page.goto('https://onlinelibrary.wiley.com/login', { waitUntil: 'load', timeout: 30000 });
+    
+    await page.goto('https://onlinelibrary.wiley.com/articles', { waitUntil: 'domcontentloaded', timeout: 60000 });
 
     
-    await page.fill('#usernameInput', 'yourUsername', { timeout: 60000 }); // Increase the timeout for the fill operation
-    await page.fill('#passwordInput', 'yourPassword', { timeout: 60000 }); // Increase the timeout for the fill operation
-    await page.click('#loginButton'); // Replace with the actual selector for the login button
-
-   
-    await page.waitForSelector('.user-account-info', { state: 'visible' }); // Replace with the actual selector for the user account info
+    await page.waitForLoadState('domcontentloaded', { timeout: 60000 });
 
     
-    const accountInfo = await page.textContent('.user-account-info'); // Replace with the actual selector for the account info container
+    await page.click('.randomArticleLink', { timeout: 60000 }); 
 
-    console.log('User account information check passed:', accountInfo);
+    
+    await page.waitForSelector('.article-content', { state: 'visible', timeout: 60000 });
+
+    //Verify  full content of the article is displayed
+    const articleContent = await page.textContent('.article-content'); 
+
+    console.log('Accessing article test passed. Article content:', articleContent);
   } catch (error) {
-    console.error('Error occurred during login or account information check:', error);
+    console.error('Error occurred during accessing article test:', error);
   } finally {
-    await browser.close();
+    // Close the page and browser only 
+    if (page) await page.close();
+    if (browser) await browser.close();
   }
 })();
